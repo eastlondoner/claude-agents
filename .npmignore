@@ -2,3 +2,5 @@ generate-screenshot.js
 .npmignore
 .git
 .gitignore
+.specstory
+.cursor

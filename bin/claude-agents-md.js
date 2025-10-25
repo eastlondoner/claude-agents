@@ -18,14 +18,14 @@ const RESET = '\x1b[0m';
 const BOLD = '\x1b[1m';
 
 // Path to persistent state file
-const stateFile = path.join(os.homedir(), '.claude_yolo_state');
+const stateFile = path.join(os.homedir(), '.claude_agents_state');
 
 // Function to get current mode from state file
 function getMode() {
   try {
     return fs.readFileSync(stateFile, 'utf8').trim();
   } catch {
-    return 'YOLO'; // Default mode
+    return 'AGENTS'; // Default mode
   }
 }
 
@@ -49,36 +49,29 @@ function askForConsent() {
       output: process.stdout
     });
 
-    console.log(`\n${BOLD}${YELLOW}🔥 CLAUDE-YOLO CONSENT REQUIRED 🔥${RESET}\n`);
+    console.log(`\n${BOLD}${YELLOW}🔥 claude-agents-md CONSENT REQUIRED 🔥${RESET}\n`);
     console.log(`${CYAN}----------------------------------------${RESET}`);
-    console.log(`${BOLD}What is claude-yolo?${RESET}`);
+    console.log(`${BOLD}What is claude-agents-md?${RESET}`);
     console.log(`This package creates a wrapper around the official Claude CLI tool that:`);
-    console.log(`  1. ${RED}BYPASSES safety checks${RESET} by automatically adding the --dangerously-skip-permissions flag`);
+    console.log(`  1. ${RED}Ignores CLAUDE.md${RESET} and uses AGENTS.md instead`);
     console.log(`  2. Automatically updates to the latest Claude CLI version`);
-    console.log(`  3. Adds colorful YOLO-themed loading messages`);
-    console.log(`  4. ${GREEN}NOW SUPPORTS SAFE MODE${RESET} with --safe flag\n`);
+    console.log(`  4. ${GREEN}NOW SUPPORTS CLAUDE.md MODE${RESET} with --claude flag\n`);
 
-    console.log(`${BOLD}${RED}⚠️ IMPORTANT SECURITY WARNING ⚠️${RESET}`);
-    console.log(`The ${BOLD}--dangerously-skip-permissions${RESET} flag was designed for use in containers`);
-    console.log(`and bypasses important safety checks. This includes ignoring file access`);
-    console.log(`permissions that protect your system and privacy.\n`);
-
-    console.log(`${BOLD}By using claude-yolo in YOLO mode:${RESET}`);
-    console.log(`  • You acknowledge these safety checks are being bypassed`);
-    console.log(`  • You understand this may allow Claude CLI to access sensitive files`);
-    console.log(`  • You accept full responsibility for any security implications\n`);
+    console.log(`${BOLD}By using claude-agents-md in AGENTS mode:${RESET}`);
+    console.log(`  • You acknowledge that CLAUDE.md is being ignored and claude will follow instructions from AGENTS.md`);
+    console.log(`  • You accept full responsibility for any rule following implications\n`);
 
     console.log(`${CYAN}----------------------------------------${RESET}\n`);
 
-    rl.question(`${YELLOW}Do you consent to using claude-yolo with these modifications? (yes/no): ${RESET}`, (answer) => {
+    rl.question(`${YELLOW}Do you consent to using claude-agents-md with these modifications? (yes/no): ${RESET}`, (answer) => {
       rl.close();
       const lowerAnswer = answer.toLowerCase().trim();
       if (lowerAnswer === 'yes' || lowerAnswer === 'y') {
-        console.log(`\n${YELLOW}🔥 YOLO MODE APPROVED 🔥${RESET}`);
+        console.log(`\n${YELLOW}🔥 AGENTS MODE APPROVED 🔥${RESET}`);
         resolve(true);
       } else {
-        console.log(`\n${CYAN}Aborted. YOLO mode not activated.${RESET}`);
-        console.log(`If you want the official Claude CLI with normal safety features, run:`);
+        console.log(`\n${CYAN}Aborted. AGENTS mode not activated.${RESET}`);
+        console.log(`If you want the official Claude CLI with normal behaviour, run:`);
         console.log(`claude`);
         resolve(false);
       }
@@ -88,7 +81,6 @@ function askForConsent() {
 
 // Get the directory of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 
 // Find node_modules directory by walking up from current file
 let nodeModulesDir = path.resolve(__dirname, '..');
@@ -188,58 +180,58 @@ debug(`Using ${claudeDir === globalClaudeDir ? 'GLOBAL' : 'LOCAL'} Claude instal
 let mjs = path.join(claudeDir, 'cli.mjs');
 let js = path.join(claudeDir, 'cli.js');
 let originalCliPath;
-let yoloCliPath;
+let agentsCliPath;
 
 if (fs.existsSync(js)) {
   originalCliPath = js;
-  yoloCliPath = path.join(claudeDir, 'cli-yolo.js');
+  agentsCliPath = path.join(claudeDir, 'cli-agents.js');
   debug(`Found Claude CLI at ${originalCliPath} (js version)`);
 } else if (fs.existsSync(mjs)) {
   originalCliPath = mjs;
-  yoloCliPath = path.join(claudeDir, 'cli-yolo.mjs');
+  agentsCliPath = path.join(claudeDir, 'cli-agents.mjs');
   debug(`Found Claude CLI at ${originalCliPath} (mjs version)`);
 } else {
   console.error(`Error: Claude CLI not found in ${claudeDir}. Make sure @anthropic-ai/claude-code is installed.`);
   process.exit(1);
 }
-const consentFlagPath = path.join(claudeDir, '.claude-yolo-consent');
+const consentFlagPath = path.join(claudeDir, '.claude-agents-md-consent');
 
 // Main function to run the application
 async function run() {
   // Handle mode commands first
   const args = process.argv.slice(2);
   if (args[0] === 'mode') {
-    if (args[1] === 'yolo') {
-      console.log(`${YELLOW}🔥 Switching to YOLO mode...${RESET}`);
-      console.log(`${RED}⚠️  WARNING: All safety checks will be DISABLED!${RESET}`);
-      setMode('YOLO');
-      console.log(`${YELLOW}✓ YOLO mode activated${RESET}`);
+    if (args[1] === 'agents') {
+      console.log(`${YELLOW}🔥 Switching to AGENTS mode...${RESET}`);
+      console.log(`${RED}⚠️  WARNING: CLAUDE.md will be igored!${RESET}`);
+      setMode('AGENTS');
+      console.log(`${YELLOW}✓ AGENTS mode activated${RESET}`);
       return;
-    } else if (args[1] === 'safe') {
-      console.log(`${CYAN}🛡️  Switching to SAFE mode...${RESET}`);
-      console.log(`${GREEN}✓ Safety checks will be enabled${RESET}`);
-      setMode('SAFE');
-      console.log(`${CYAN}✓ SAFE mode activated${RESET}`);
+    } else if (args[1] === 'claude') {
+      console.log(`${CYAN}🛡️  Switching to CLAUDE.md mode...${RESET}`);
+      console.log(`${GREEN}✓ CLAUDE.md will be enabled${RESET}`);
+      setMode('CLAUDE');
+      console.log(`${CYAN}✓ CLAUDE.md mode activated${RESET}`);
       return;
     } else {
       const currentMode = getMode();
-      console.log(`Current mode: ${currentMode === 'YOLO' ? YELLOW : CYAN}${currentMode}${RESET}`);
+      console.log(`Current mode: ${currentMode === 'AGENTS' ? YELLOW : CYAN}${currentMode}${RESET}`);
       return;
     }
   }
 
-  // Check for --safe or --no-yolo flags
-  const safeMode = process.argv.includes('--safe') || 
-                   process.argv.includes('--no-yolo') ||
-                   getMode() === 'SAFE';
+  // Check for --claude or --no-agents flags
+  const claudeMode = process.argv.includes('--claude') || 
+                   process.argv.includes('--no-agents') ||
+                   getMode() === 'CLAUDE';
   
-  if (safeMode) {
+  if (claudeMode) {
     // Remove our flags before passing to original CLI
     process.argv = process.argv.filter(arg => 
-      arg !== '--safe' && arg !== '--no-yolo'
+      arg !== '--claude' && arg !== '--no-agents'
     );
     
-    console.log(`${CYAN}[SAFE] Running Claude in SAFE mode${RESET}`);
+    console.log(`${CYAN}[CLAUDE] Running Claude in CLAUDE.md mode${RESET}`);
     
     // Update if needed
     await checkForUpdates();
@@ -255,21 +247,9 @@ async function run() {
     return; // Exit early
   }
 
-  // YOLO MODE continues below
-  console.log(`${YELLOW}[YOLO] Running Claude in YOLO mode${RESET}`);
+  // AGENTS MODE continues below
+  console.log(`${YELLOW}[AGENTS] Running Claude in AGENTS mode${RESET}`);
   
-  // Temporarily fake non-root for YOLO mode
-  if (process.getuid && process.getuid() === 0) {
-    console.log(`${YELLOW}⚠️  Running as root - applying YOLO bypass...${RESET}`);
-    // Store original getuid
-    const originalGetuid = process.getuid;
-    // Override getuid to return non-root
-    process.getuid = () => 1000; // Fake regular user ID
-    // Restore after a delay to allow CLI to start
-    setTimeout(() => {
-      process.getuid = originalGetuid;
-    }, 100);
-  }
   
   // Check and update Claude package first
   await checkForUpdates();
@@ -280,7 +260,7 @@ async function run() {
   }
 
   // Check if consent is needed
-  const consentNeeded = !fs.existsSync(yoloCliPath) || !fs.existsSync(consentFlagPath);
+  const consentNeeded = !fs.existsSync(agentsCliPath) || !fs.existsSync(consentFlagPath);
   
   // If consent is needed and not already given, ask for it
   if (consentNeeded) {
@@ -308,74 +288,20 @@ async function run() {
     debug('Replaced all instances of "punycode" with "punycode/"');
   }
 
-  // Replace getIsDocker() calls with true
-  cliContent = cliContent.replace(/[a-zA-Z0-9_]*\.getIsDocker\(\)/g, 'true');
-  debug("Replaced all instances of *.getIsDocker() with true");
-
-  // Replace hasInternetAccess() calls with false
-  cliContent = cliContent.replace(/[a-zA-Z0-9_]*\.hasInternetAccess\(\)/g, 'false');
-  debug("Replaced all instances of *.hasInternetAccess() with false");
-
-  // Replace root check patterns
-  // Pattern 1: process.getuid() === 0
-  cliContent = cliContent.replace(/process\.getuid\(\)\s*===\s*0/g, 'false');
-  debug("Replaced process.getuid() === 0 checks with false");
-
-  // Pattern 2: process.getuid?.() === 0
-  cliContent = cliContent.replace(/process\.getuid\?\.\(\)\s*===\s*0/g, 'false');
-  debug("Replaced process.getuid?.() === 0 checks with false");
-
-  // Pattern 3: getuid() === 0 (with any variable)
-  cliContent = cliContent.replace(/(\w+)\.getuid\(\)\s*===\s*0/g, 'false');
-  debug("Replaced all getuid() === 0 checks with false");
-
-  // Pattern 4: Replace any EUID checks
-  cliContent = cliContent.replace(/process\.geteuid\(\)\s*===\s*0/g, 'false');
-  cliContent = cliContent.replace(/process\.geteuid\?\.\(\)\s*===\s*0/g, 'false');
-  debug("Replaced geteuid() checks with false");
+  // Replace CLAUDE.md with AGENTS.md
+  cliContent = cliContent.replace(/CLAUDE.md/gi, 'AGENTS.md');
+  debug("Replaced all instances of CLAUDE.md with AGENTS.md");
 
   // Add warning message
-  console.log(`${YELLOW}🔥 YOLO MODE ACTIVATED 🔥${RESET}`);
-
-  // Replace the loading messages array with YOLO versions
-  const originalArray = '["Accomplishing","Actioning","Actualizing","Baking","Brewing","Calculating","Cerebrating","Churning","Clauding","Coalescing","Cogitating","Computing","Conjuring","Considering","Cooking","Crafting","Creating","Crunching","Deliberating","Determining","Doing","Effecting","Finagling","Forging","Forming","Generating","Hatching","Herding","Honking","Hustling","Ideating","Inferring","Manifesting","Marinating","Moseying","Mulling","Mustering","Musing","Noodling","Percolating","Pondering","Processing","Puttering","Reticulating","Ruminating","Schlepping","Shucking","Simmering","Smooshing","Spinning","Stewing","Synthesizing","Thinking","Transmuting","Vibing","Working"]';
-  const yoloSuffixes = [
-    ` ${RED}(safety's off, hold on tight)${RESET}`,
-    ` ${YELLOW}(all gas, no brakes, lfg)${RESET}`,
-    ` ${BOLD}\x1b[35m(yolo mode engaged)${RESET}`,
-    ` ${CYAN}(dangerous mode! I guess you can just do things)${RESET}`
-  ];
-
-  // Function to add a random YOLO suffix to each word in the array
-  const addYoloSuffixes = (arrayStr) => {
-    try {
-      const array = JSON.parse(arrayStr);
-      const yoloArray = array.map(word => {
-        const randomSuffix = yoloSuffixes[Math.floor(Math.random() * yoloSuffixes.length)];
-        return word + randomSuffix;
-      });
-      return JSON.stringify(yoloArray);
-    } catch (e) {
-      debug(`Error modifying loading messages array: ${e.message}`);
-      return arrayStr;
-    }
-  };
-
-  cliContent = cliContent.replace(originalArray, addYoloSuffixes(originalArray));
-  debug("Replaced loading messages with YOLO versions");
+  console.log(`${YELLOW}🔥 AGENTS MODE ACTIVATED 🔥${RESET}`);
 
   // Write the modified content to a new file, leaving the original untouched
-  fs.writeFileSync(yoloCliPath, cliContent);
-  debug(`Created modified CLI at ${yoloCliPath}`);
-  debug("Modifications complete. The --dangerously-skip-permissions flag should now work everywhere.");
-
-  // Add the --dangerously-skip-permissions flag to the command line arguments
-  // This will ensure it's passed to the CLI even if the user didn't specify it
-  process.argv.splice(2, 0, '--dangerously-skip-permissions');
-  debug("Added --dangerously-skip-permissions flag to command line arguments");
+  fs.writeFileSync(agentsCliPath, cliContent);
+  debug(`Created modified CLI at ${agentsCliPath}`);
+  debug("Modifications complete. The AGENTS.md file should now be used instead of CLAUDE.md.");
 
   // Now import the modified CLI
-  await import(yoloCliPath);
+  await import(agentsCliPath);
 }
 
 // Run the main function

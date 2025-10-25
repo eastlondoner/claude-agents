@@ -1,58 +1,47 @@
-# Claude YOLO
+# Claude AGENTS
 
-A wrapper for the Claude CLI that can run in YOLO mode (bypassing all safety checks) OR Safe mode (standard Claude CLI behavior).
+A wrapper for the Claude CLI that can run in AGENTS mode (ignoring CLAUDE.md and using AGENTS.md) OR CLAUDE mode (standard Claude behavior).
 
-⚠️ **SECURITY WARNING**: YOLO mode bypasses important safety checks! This completely bypasses the "human in the loop" checks, this could delete your data, leak your secrets and even brick your computer. Use at your own risk.
+## What's New 🎉
 
-## What's New in This Fork 🎉
-
-This fork adds **SAFE MODE** support and more! You can now:
-- Switch between YOLO and SAFE modes
+- Switch between CLAUDE and AGENTS modes
 - Use the handy `cl` bash wrapper for quick mode switching
 - Mode preference is saved between sessions
 - **NEW**: Auto-start Claude after mode switch
-- **NEW**: YOLO mode works even as root user
 
 ## Installation
 
 ```bash
-# Install from this fork
-npm install -g github:maxparez/claude-yolo
-
-# Or install the original
-npm install -g claude-yolo
+# Install
+npm install -g claude-agents-md
 ```
 
-The first time you run `claude-yolo`, you will be presented with a consent prompt explaining the security implications. You must explicitly agree to continue.
-
-<img width="750" alt="image" src="https://github.com/user-attachments/assets/f8e07cf0-6c43-4663-b9e2-f61b1afb4e99" />
+The first time you run `claude-agents-md`, you will be presented with a consent prompt explaining the security implications. You must explicitly agree to continue.
 
 Your consent choice is remembered for future runs.
-
-## New Safe Mode Feature 🛡️
 
 ### Using command-line flags
 
 ```bash
-# Run in SAFE mode (normal Claude CLI behavior)
-claude-yolo --safe
-claude-yolo --no-yolo
+# Run in CLAUDE mode (normal Claude CLI behavior)
+claude-agents-md --claude
+claude-agents-md --no-agents
 
-# Run in YOLO mode (default)
-claude-yolo
+# Run in AGENTS mode (default)
+claude-agents-md
 ```
 
 ### Using mode commands
 
 ```bash
-# Switch to YOLO mode
-claude-yolo mode yolo
+# Switch to AGENTS mode
+claude-agents-md mode agents
 
-# Switch to SAFE mode
-claude-yolo mode safe
+# Switch to CLAUDE mode
+claude-agents-md mode claude
 
 # Check current mode
-claude-yolo mode
+claude-agents-md mode
 ```
 
 ### Using the cl wrapper script (Recommended!)
@@ -61,15 +50,15 @@ For even easier mode management, use the included `cl` bash wrapper:
 
 ```bash
 # Install globally during npm install
-npm install -g github:maxparez/claude-yolo
+npm install -g claude-agents-md
 
 # Or copy manually to your PATH
-cp node_modules/claude-yolo/bin/cl /usr/local/bin/cl
+cp node_modules/claude-agents-md/bin/cl /usr/local/bin/cl
 chmod +x /usr/local/bin/cl
 
 # Now you can use:
-cl /YON      # Switch to YOLO mode AND start Claude
-cl /YOFF     # Switch to SAFE mode AND start Claude
+cl /YON      # Switch to AGENTS mode AND start Claude
+cl /YOFF     # Switch to CLAUDE mode AND start Claude
 cl /STATUS   # Show current mode (without starting Claude)
 cl /HELP     # Show help
 
@@ -80,78 +69,41 @@ cl "write a hello world function"
 cl /YON "create a web server"
 ```
 
-Mode preference is saved in `~/.claude_yolo_state` and persists between sessions.
+Mode preference is saved in `~/.claude_agents_state` and persists between sessions.
 
 ## Visual Mode Indicators
 
 The tool now shows clear visual indicators of which mode you're in:
 
-- **YOLO Mode**: `[YOLO]` prefix in yellow 🔥
-- **SAFE Mode**: `[SAFE]` prefix in cyan 🛡️
-
-## Root User Support
-
-Unlike the standard Claude CLI, this fork allows YOLO mode to run even as root user:
-
-- Standard Claude CLI blocks `--dangerously-skip-permissions` when running as root
-- This fork bypasses that check in YOLO mode
-- You'll see a warning when running as root, but it will work
-- SAFE mode respects all original Claude CLI security features
+- **AGENTS Mode**: `[AGENTS]` prefix in yellow 🔥
+- **CLAUDE Mode**: `[CLAUDE]` prefix in cyan 🛡️
 
 ## Usage
 
 ```bash
-claude-yolo [options]
+claude-agents-md [options]
 ```
 
 All arguments and options are passed directly to the Claude CLI.
 
-This wrapper in YOLO mode:
+This wrapper in AGENTS mode:
 1. Checks for and automatically installs updates to the Claude package
-2. Displays "🔥 YOLO MODE ACTIVATED 🔥" warning in yellow text
-3. Creates a modified copy of the Claude CLI code to bypass permission checks
-   - Replaces all `getIsDocker()` calls with `true`
-   - Replaces all `hasInternetAccess()` calls with `false`
-   - Bypasses root user checks (process.getuid() === 0)
-   - Adds colorful YOLO-themed loading messages
+2. Displays "🔥 AGENTS MODE ACTIVATED 🔥" warning in yellow text
+3. Creates a modified copy of the Claude CLI code to use AGENTS.md
 4. Leaves the original Claude CLI file untouched (won't affect your normal `claude` command)
-5. Adds the `--dangerously-skip-permissions` flag to command line arguments
-6. Imports the modified copy of the CLI
 
-In SAFE mode, it simply runs the original Claude CLI without modifications.
-
-## New in Version 1.8.0 (This Fork)
-
-- **Auto-start on Mode Switch**: `cl /YON` and `cl /YOFF` now automatically start Claude after switching
-- **Root User Bypass**: YOLO mode now works even when running as root/sudo
-- **Improved cl Wrapper**: More intuitive behavior with auto-start feature
-- **Better Error Handling**: Clearer messages when running as root
-
-## New in Version 1.7.0 (This Fork)
-
-- **SAFE Mode Support**: Run Claude with normal safety checks using `--safe` or `--no-yolo`
-- **Mode Persistence**: Your mode choice is saved in `~/.claude_yolo_state`
-- **Mode Commands**: Use `claude-yolo mode [yolo|safe]` to switch modes
-- **Bash Wrapper**: Included `cl` script for easy mode switching
-- **Visual Mode Indicators**: Clear `[YOLO]` or `[SAFE]` prefixes
-
-## Features
-
-- **Auto-update**: Automatically checks for and installs updates to the Claude package at runtime
-- **Non-destructive approach**: Creates a separate modified copy of the CLI file instead of modifying the original
-- **Safe for global installations**: Your regular `claude` command will work normally even after installing claude-yolo
-- **Debug mode**: Set the `DEBUG=1` environment variable to see detailed logs about the modifications
+In CLAUDE mode, it simply runs the original Claude CLI without modifications.
 
 ## Why?
 
-Sometimes you just want to YOLO and skip those pesky permission checks. But sometimes you want the safety checks back! This fork gives you the best of both worlds.
+You want to use AGENTS.md
 
 ## Debugging
 
 If you encounter any issues, you can run with debug output:
 
 ```bash
-DEBUG=1 claude-yolo
+DEBUG=1 claude-agents-md
 ```
 
 This will show additional information about:
@@ -159,13 +111,12 @@ This will show additional information about:
 - Current and latest available versions
 - When updates are being installed
 - Modifications being made to the CLI file
-- Root bypass operations
 
 ## Auto-Update Feature
 
-Claude YOLO automatically checks for updates to the Claude package each time it runs:
+Claude AGENTS automatically checks for updates to the Claude package each time it runs:
 
-1. When you run `claude-yolo`, it checks for the latest version of `@anthropic-ai/claude-code` on npm
+1. When you run `claude-agents-md`, it checks for the latest version of `@anthropic-ai/claude-code` on npm
 2. If your installed version is outdated, it will:
    - Update your package.json with the latest version
    - Run npm install to get the newest version
@@ -175,15 +126,3 @@ Claude YOLO automatically checks for updates to the Claude package each time it 
 ## Important Security Disclaimer
 
 This is an unofficial tool and not supported by Anthropic. Use at your own risk.
-
-**SECURITY WARNING**:
-- YOLO mode bypasses safety mechanisms intentionally built into the Claude CLI
-- The `--dangerously-skip-permissions` flag was designed for use in container environments
-- This fork additionally bypasses root user restrictions in YOLO mode
-- By using this tool in YOLO mode, you acknowledge that:
-  - Important safety checks are being bypassed
-  - Claude may access files it normally would not have permission to access
-  - Running as root with bypassed permissions is extremely dangerous
-  - You accept full responsibility for any security implications
-  
-Anthropic designed these safety checks for good reason. Only use YOLO mode if you fully understand and accept these risks. Use SAFE mode when you want the standard Claude CLI protections.
