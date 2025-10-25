@@ -1,6 +1,6 @@
 # Claude AGENTS
 
-A wrapper for the Claude CLI that can run in AGENTS mode (ignoring CLAUDE.md and using AGENTS.md) OR CLAUDE mode (standard Claude behavior).
+A wrapper for the Claude CLI that can run in AGENTS.md mode - ignoring CLAUDE.md and using AGENTS.md (like every other editor).
 
 ## What's New 🎉
 
@@ -43,33 +43,6 @@ claude-agents-md mode claude
 # Check current mode
 claude-agents-md mode
 ```
-
-### Using the cl wrapper script (Recommended!)
-
-For even easier mode management, use the included `cl` bash wrapper:
-
-```bash
-# Install globally during npm install
-npm install -g claude-agents-md
-
-# Or copy manually to your PATH
-cp node_modules/claude-agents-md/bin/cl /usr/local/bin/cl
-chmod +x /usr/local/bin/cl
-
-# Now you can use:
-cl /YON      # Switch to AGENTS mode AND start Claude
-cl /YOFF     # Switch to CLAUDE mode AND start Claude
-cl /STATUS   # Show current mode (without starting Claude)
-cl /HELP     # Show help
-
-# Run Claude in current mode
-cl "write a hello world function"
-
-# Switch mode and run with command
-cl /YON "create a web server"
-```
-
-Mode preference is saved in `~/.claude_agents_state` and persists between sessions.
 
 ## Visual Mode Indicators
 

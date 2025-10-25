@@ -17,7 +17,7 @@ cp "$CLI_FILE" "${CLI_FILE}.backup"
 echo "Created backup at ${CLI_FILE}.backup"
 
 # Replace CLAUDE.md with AGENTS.md case insensitively
-sed -i.bak1 's/CLAUDE\.md/AGENTS.md/gi' "$CLI_FILE"
+sed -i.bak1 's/CLAUDE\.md/AGENTS.md/g' "$CLI_FILE"
 echo "Replaced all instances of CLAUDE.md with AGENTS.md"
 
 # Clean up the .bak file created by sed
