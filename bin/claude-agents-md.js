@@ -253,8 +253,7 @@ async function run() {
 
   // AGENTS MODE continues below
   console.log(`${YELLOW}[AGENTS] Running Claude in AGENTS mode${RESET}`);
-  
-  
+
   // Check and update Claude package first
   await checkForUpdates();
 
@@ -293,7 +292,7 @@ async function run() {
   }
 
   // Replace CLAUDE.md with AGENTS.md
-  cliContent = cliContent.replace(/CLAUDE.md/gi, 'AGENTS.md');
+  cliContent = cliContent.replace(/CLAUDE\.md/gi, 'AGENTS.md');
   debug("Replaced all instances of CLAUDE.md with AGENTS.md");
 
   // Add warning message
