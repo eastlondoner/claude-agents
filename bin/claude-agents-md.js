@@ -292,7 +292,7 @@ async function run() {
   }
 
   // Replace CLAUDE.md with AGENTS.md
-  cliContent = cliContent.replace(/CLAUDE\.md/g, 'AGENTS.md');
+  cliContent = cliContent.replace(/([^,])CLAUDE\.md/g, '$1AGENTS.md');
   debug("Replaced all instances of CLAUDE.md with AGENTS.md");
 
   // Add warning message
