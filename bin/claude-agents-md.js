@@ -169,7 +169,11 @@ try {
 }
 
 // Path to the local Claude CLI installation
-const localClaudeDir = path.join(nodeModulesDir, 'node_modules', '@anthropic-ai', 'claude-code');
+let localClaudeDir = path.join(nodeModulesDir, 'node_modules', '@anthropic-ai', 'claude-code');
+if(!fs.existsSync(localClaudeDir)) {
+  // Path to claude cli in this package
+  localClaudeDir = path.join(nodeModulesDir, 'claude-agents-md', 'node_modules', '@anthropic-ai', 'claude-code');
+}
 
 // Prioritize global installation, fall back to local
 const claudeDir = globalClaudeDir || localClaudeDir;
